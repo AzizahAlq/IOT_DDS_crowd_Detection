@@ -157,9 +157,28 @@ The project directory is structured as follows:
 
 Follow these steps to run the system:
 
-### Step 1: Clone the Repository
+### Step 1: Install cyclondds
 
-Clone the project repository to your local machine.
+Install cyclondds to run the project on your local machine. 
+
+1. # Install prerequisites
+brew install cmake git ninja 
+
+2. # Clone and build CycloneDDS
+git clone https://github.com/eclipse-cyclonedds/cyclonedds.git
+cd cyclonedds
+mkdir build && cd build
+cmake -G Ninja ..
+ninja
+sudo ninja install
+
+3. # Set PATH (optional for macOS)
+echo 'export PATH="/usr/local/cyclonedds/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+
+4. # Install Python bindings (if required)
+cd ../python
+python setup.py install
+
 
 ### Step 2: Prepare Video Files
 
