@@ -13,7 +13,7 @@ The system is designed with modularity and scalability in mind, allowing the add
 1. Overview of the System Architecture
 2. System Components
 3. DDS Communication
-4. Dockerized Edge Devices
+4. Camera Devices and Edge Devices
 5. Flask-Based Web Interface
 6. Video Processing and Crowd Detection
 7. Setting Up the System
