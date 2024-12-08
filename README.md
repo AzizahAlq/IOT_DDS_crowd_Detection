@@ -29,11 +29,11 @@ The system is designed with modularity and scalability in mind, allowing the add
 
 The system architecture of this project simulates a distributed IoT environment where **edge devices** (each represented by a Docker container) detect crowds from video streams and communicate the results to a **central DDS server**. The video streams, along with the real-time crowd detection data, are then displayed on a web interface hosted by a **Flask server**.
 
-At the heart of the system is **Docker**, which encapsulates each edge device and the DDS server into separate containers, providing isolation, scalability, and ease of deployment. The **DDS (Data Distribution Service)** protocol allows real-time communication between the edge devices and the central server, ensuring low-latency data transmission.
+The **DDS (Data Distribution Service)** protocol allows real-time communication between the edge devices and the central server, ensuring low-latency data transmission.
 
 The key components of the system are:
 
-- **Dockerized Edge Devices**: Each device processes video feeds locally using **YOLOv5** for crowd detection and sends the crowd count data to the DDS server.
+- **Edge Devices**: Each device processes video feeds locally using **YOLOv5** for crowd detection and sends the crowd count data to the DDS server.
 - **DDS Communication**: Facilitates real-time messaging between edge devices and the DDS server.
 - **Flask-Based Web Interface**: A lightweight web server displays live video streams and crowd detection results in real-time.
   
@@ -43,32 +43,36 @@ The key components of the system are:
 
 The following sections describe each major component of the system in detail.
 
-### 1. Edge Devices
+### 1. Camera  Devices
+- **Stream Video**:  Each **camrea device** simulates an IoT camera that will stream video to string and publish the frames as "videoframes" topic.
+  
+### 2. Edge Devices
 
-Each **edge device** simulates an IoT camera by processing pre-recorded video files and detecting the number of people in the scene using a machine learning model. The processed video frames are sent to the Flask server, and the crowd count is communicated via DDS. Edge devices are designed to run inside **Docker containers**, which allows for easy scaling and deployment.
+Each **edge device** subscribe the processed video frames from "videoframes" topic then processing and detecting the number of people in the scene using a machine learning model.The crowd count is publish via DDS. 
 
 #### Responsibilities:
 - Process video frames using **YOLOv5** to detect people.
 - Publish the detected crowd count via DDS.
 - Send the processed video frames to the Flask server for visualization.
 
-### 2. Data Distribution Service (DDS)
+
+### 3. Data Distribution Service (DDS)
 
 **DDS (Data Distribution Service)** is a middleware protocol used for real-time data exchange between systems. In this project, DDS facilitates communication between the edge devices and the central DDS server. Each edge device publishes its crowd detection data, and the server acts as a subscriber that listens for the incoming data.
 
 #### DDS Key Concepts:
 - **DomainParticipant**: Represents a node in the DDS network.
-- **Topic**: Defines the type of data being exchanged (e.g., crowd count).
-- **DataWriter**: Edge devices publish data using DataWriters.
+- **Topic**: Defines the type of data being exchanged (e.g. videoframes, crowd_count).
+- **DataWriter**: IoT camera and Edge devices publish data using DataWriters.
 - **DataReader**: The DDS server receives data using DataReaders.
 
-### 3. Flask Web Server
+### 4. Flask Web Server
 
-The **Flask server** is responsible for hosting the web interface that displays live video streams and crowd detection results. It accepts video frames from edge devices and renders them in real-time on a webpage, along with the crowd count data. The Flask server also allows for interaction between different components via RESTful APIs.
+The **Flask server** is responsible for hosting the web interface that displays live crowd detection results. It accepts crowd count  from edge devices and renders them in real-time on a webpage, along with saving the crowd count data in csv file . The Flask server also allows for interaction between different components via RESTful APIs.
 
 #### Responsibilities:
 - Serve the web interface.
-- Stream video frames received from edge devices.
+- crowd count data received from edge devices.
 - Display crowd count data on the webpage.
 
 ---
@@ -89,11 +93,9 @@ Each `CrowdCount` message contains:
 
 ---
 
-## Dockerized Edge Devices
+## Edge Devices
 
-The edge devices run inside Docker containers, making the system scalable and easy to deploy. Each container runs an instance of the `crowd_detection.py` script, which processes video files, performs crowd detection using the **YOLOv5** model, and sends the results to the Flask server and the DDS server.
-
-Docker provides isolation for each edge device, ensuring that they can run independently of each other, and allows the system to be easily scaled by simply spinning up new containers. This makes it possible to simulate a large-scale IoT network with multiple edge devices.
+The edge devices , making the system scalable and easy to deploy. Each edge device runs an instance of the `crowd_detection.py` script, which processes video files, performs crowd detection using the **YOLOv5** model, and sends the results to the Flask server and the DDS server.
 
 ---
 
@@ -103,7 +105,7 @@ The **Flask web server** provides a user-friendly interface for visualizing the 
 
 #### Flask Responsibilities:
 - **Render HTML Templates**: The web server renders an `index.html` template that displays the video streams.
-- **Stream Video**: The server receives video frames from the edge devices via HTTP POST requests and streams them to the client browser using `multipart/x-mixed-replace`, which allows for real-time video display.
+
 - **Handle Incoming Requests**: The server handles requests from the edge devices to receive the video frames and crowd detection data.
 
 ---
@@ -122,13 +124,6 @@ The video processing pipeline is as follows:
 ---
 
 ## Setting Up the System
-
-The system is entirely Dockerized, so setup is relatively straightforward. Follow the steps below to set up and run the system on your machine.
-
-### Prerequisites:
-- **Docker**: Ensure Docker is installed and running on your machine.
-- **Docker Compose**: Docker Compose is used to manage the multi-container setup.
-- **Python 3.x**: Required for running the Python scripts inside the containers.
 
 ### Project Structure:
 
@@ -168,33 +163,9 @@ Clone the project repository to your local machine.
 
 ### Step 2: Prepare Video Files
 
-Ensure the pre-recorded video files are placed inside the `/data/videos/` directory. This will be used as input for the edge devices.
+Ensure the pre-recorded video files are placed inside the `/data/videos/` directory. This will be used as input for the camera devices.
 
-### Step 3: Build Docker Containers
-
-Use Docker Compose to build the Docker containers for the edge devices, DDS server, and Flask server.
-
-```bash
-docker-compose build
-```
-
-This command will build all the necessary Docker images for the system.
-
-### Step 4: Run the System
-Once the containers are built, you can start the system using Docker Compose.
-
-```bash
-docker-compose up
-```
-
-This command will start all containers, including the edge devices, DDS server, and Flask web server.
-
-### Step 5: Access the Flask Web Interface
-Open your web browser and go to http://localhost:5001 to access the web interface. You should see the live video streams from the edge devices along with the detected crowd counts.
-
----
-
-### Run Locally
+### Step 3: Run the System
 
 To run the crowd detection project locally, you need to set up a Python virtual environment and install all necessary dependencies. Follow these steps:
 
@@ -232,25 +203,29 @@ pip install -r requirements.txt
 Now to run the crowd detection locally without using Docker, you can use the following command. This will execute the crowd detection on the specified video file (`crowd_scene1.mp4` in this case):
 
 ```bash
-python local_crowd_detection.py --path data/videos/crowd_scene1.mp4 #to run detection on video 1
-python local_crowd_detection.py --path data/videos/crowd_scene2.mp4 #to run detection on video 2
+python3 cloudserver.py
+python3 edgeDevice.py
+python3 camera1.py --path data/videos/crowd_scene1.mp4  #to run detection on video 1
+python3 camera2.py --path data/videos/crowd_scene2.mp4 #to run detection on video 2
 ```
 
-Make sure that the necessary dependencies are installed, and the `local_crowd_detection.py` script is properly configured to read the video file and perform detection using the YOLOv5 model. You can adjust the `--path` argument to point to any video file or device of your choice.
+Make sure that the necessary dependencies are installed, and the `edgeDevice.py` script is properly configured to read the video frames and perform detection using the YOLOv5 model. You can adjust the `--path` argument to point to any video file or device of your choice.
 
 ---
 
 ## Understanding the Code
 The following sections provide a detailed explanation of the key scripts used in the project.
 
-**1. crowd_detection.py**  
-This script is responsible for processing video files on the edge devices. It uses YOLOv5 for detecting people in the video frames and sends the crowd count via DDS. The video frames are also sent to the Flask server for real-time display.
+**1. camera.py**  
+This script is responsible for processing video frames to sent them to the edge device for real-time display.
 
-**2. dds_server.py**  
+**2. edgeDevice.py**  
+This script is responsible for processing video frames on the edge devices. It uses YOLOv5 for detecting people in the video frames and sends the crowd count via DDS. The video frames are also sent to the Flask server for real-time display.
 This script runs on the central DDS server. It listens for incoming crowd count data from the edge devices and logs the received data.
 
-**3. app.py**  
-This script runs the Flask web server. It serves the web interface and handles incoming video frames from the edge devices. It streams the video frames in real-time and displays the crowd count data.
+**3. cloudserver.py**  
+This script runs on the central DDS server. It listens for incoming crowd count data from the edge devices and logs the received data.
+This script runs the Flask web server. It serves the web interface in real-time and displays the crowd count data.
 
 
 ## **Scaling the System**
@@ -258,8 +233,7 @@ The system is highly scalable. You can add more edge devices by simply copying t
 
 To scale the system, follow these steps:
 - Add New Video Files: Place new video files in the /data/videos/ directory.
-- Duplicate Edge Device Definition: In the docker-compose.yml file, copy the edge_device service definition and modify it for the new device.
-- Rebuild and Run: Rebuild the Docker containers and start the system again.
+- Duplicate Edge Device.
 
 ## Potential Use Cases
 This system can be adapted for various real-world applications, such as:
@@ -271,4 +245,4 @@ This system can be adapted for various real-world applications, such as:
 
 
 ## Summary
-This project demonstrates a comprehensive solution for building an IoT-based crowd detection system using Docker, DDS, and Flask. It showcases the power of Docker for containerizing edge devices, DDS for real-time communication, and Flask for providing a web interface for visualization. The system is modular, scalable, and flexible, making it a great foundation for developing more complex IoT applications. Whether for smart city surveillance, event management, or retail analytics, this system can be adapted to meet a wide range of real-world use cases.
+This project demonstrates a comprehensive solution for building an IoT-based crowd detection system using DDS, and Flask. It showcases the power of edge devices, DDS for real-time communication, and Flask for providing a web interface for visualization. The system is modular, scalable, and flexible, making it a great foundation for developing more complex IoT applications. Whether for smart city surveillance, event management, or retail analytics, this system can be adapted to meet a wide range of real-world use cases.
