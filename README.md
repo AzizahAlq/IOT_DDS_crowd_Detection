@@ -1,4 +1,4 @@
-# IoT-Based Crowd Detection System using Docker, DDS, and Flask
+# IoT-Based Crowd Detection System DDS, and Flask
 
 ## Introduction
 
