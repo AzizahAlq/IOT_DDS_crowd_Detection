@@ -161,24 +161,30 @@ Follow these steps to run the system:
 
 Install cyclondds to run the project on your local machine. 
 
-1. # Install prerequisites
+1. **Install prerequisites**
+```bash
 brew install cmake git ninja 
+```
 
-2. # Clone and build CycloneDDS
+2. **Clone and build CycloneDDS**
+```bash
 git clone https://github.com/eclipse-cyclonedds/cyclonedds.git
 cd cyclonedds
 mkdir build && cd build
 cmake -G Ninja ..
 ninja
 sudo ninja install
+```
 
-3. # Set PATH (optional for macOS)
+3. **Set PATH (optional for macOS)**
+```bash
 echo 'export PATH="/usr/local/cyclonedds/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
-
-4. # Install Python bindings (if required)
+```
+4. **Install Python bindings (if required)**
+```bash
 cd ../python
 python setup.py install
-
+```
 
 ### Step 2: Prepare Video Files
 
