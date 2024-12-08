@@ -258,8 +258,9 @@ The system is highly scalable. You can add more edge devices by simply copying t
 
 To scale the system, follow these steps:
 - Add New Video Files: Place new video files in the /data/videos/ directory.
-- Duplicate Edge Device.
-
+- Duplicate the cameras and edge devices, and run them on different machines using virtual machines (VMs) or physical computers.
+- Don't forget to download all dependencies, such as CycloneDDS, NumPy, YOLO, and OpenCV, as specified in the requirements.txt file.
+  
 ## Potential Use Cases
 This system can be adapted for various real-world applications, such as:
 
