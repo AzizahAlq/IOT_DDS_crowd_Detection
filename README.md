@@ -104,9 +104,9 @@ The edge devices , making the system scalable and easy to deploy. Each edge devi
 The **Flask web server** provides a user-friendly interface for visualizing the results from the edge devices. The video feeds are displayed side by side, and each feed shows the number of people detected in real-time.
 
 #### Flask Responsibilities:
-- **Render HTML Templates**: The web server renders an `index.html` template that displays the video streams.
+- **Render HTML Templates**: The web server renders an `index.html` template that displays the crowd detection.
 
-- **Handle Incoming Requests**: The server handles requests from the edge devices to receive the video frames and crowd detection data.
+- **Saving  Results**: The server save results from the edge devices of crowd detection data.
 
 ---
 
