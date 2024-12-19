@@ -95,7 +95,7 @@ Each `CrowdCount` message contains:
 
 ## Edge Devices
 
-The edge devices , making the system scalable and easy to deploy. Each edge device runs an instance of the `crowd_detection.py` script, which processes video files, performs crowd detection using the **YOLOv5** model, and sends the results to the Flask server and the DDS server.
+The edge devices , making the system scalable and easy to deploy. Each edge device runs an instance of the `crowd_detection.py` script, which processes video files, performs crowd detection using the **YOLOv8** model, and sends the results to the Flask server and the DDS server.
 
 ---
 
@@ -112,11 +112,11 @@ The **Flask web server** provides a user-friendly interface for visualizing the 
 
 ## Video Processing and Crowd Detection
 
-The edge devices use **YOLOv5** (You Only Look Once), a pre-trained deep learning model, to detect objects in the video frames. YOLOv5 is known for its high accuracy and speed, making it ideal for real-time applications like crowd detection.
+The edge devices use **YOLOv8** (You Only Look Once), a pre-trained deep learning model, to detect objects in the video frames. YOLOv8 is known for its high accuracy and speed, making it ideal for real-time applications like crowd detection.
 
 The video processing pipeline is as follows:
 1. **Capture Video Frames**: The video file is loaded, and frames are processed in sequence.
-2. **Run YOLOv5 Inference**: Each frame is passed through the YOLOv5 model to detect objects (in this case, people).
+2. **Run YOLOv5 Inference**: Each frame is passed through the YOLOv8 model to detect objects (in this case, people).
 3. **Draw Bounding Boxes**: Detected people are highlighted with bounding boxes on the frame.
 4. **Send Frames to Flask Server**: The processed frame is sent to the Flask server for display.
 5. **Send Crowd Count via DDS**: The number of people detected in the frame is published to the DDS server.
