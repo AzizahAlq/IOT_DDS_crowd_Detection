@@ -33,7 +33,7 @@ The **DDS (Data Distribution Service)** protocol allows real-time communication 
 
 The key components of the system are:
 
-- **Edge Devices**: Each device processes video feeds locally using **YOLOv5** for crowd detection and sends the crowd count data to the DDS server.
+- **Edge Devices**: Each device processes video feeds locally using **YOLOv8** for crowd detection and sends the crowd count data to the DDS server.
 - **DDS Communication**: Facilitates real-time messaging between edge devices and the DDS server.
 - **Flask-Based Web Interface**: A lightweight web server displays live video streams and crowd detection results in real-time.
   
@@ -51,7 +51,7 @@ The following sections describe each major component of the system in detail.
 Each **edge device** subscribe the processed video frames from "videoframes" topic then processing and detecting the number of people in the scene using a machine learning model.The crowd count is publish via DDS. 
 
 #### Responsibilities:
-- Process video frames using **YOLOv5** to detect people.
+- Process video frames using **YOLOv8** to detect people.
 - Publish the detected crowd count via DDS.
 - Send the processed video frames to the Flask server for visualization.
 
